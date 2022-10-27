@@ -7,6 +7,9 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class DepartmentDAOImpl implements DepartmentDAO {
     @Override
     public boolean addDepartment(Department deptObj) {
@@ -20,6 +23,21 @@ public class DepartmentDAOImpl implements DepartmentDAO {
             System.out.println("Hibernate Exception");
             System.out.print(exception.getLocalizedMessage());
             return false;
+        }
+    }
+
+    @Override
+    public List<Department> getDepartmentList() {
+        try (Session session = HibernateSessionUtil.getSession()){
+            List<Department> departmentList = new ArrayList<>();
+            for (final Object d : session.createQuery("from Department ").list()) {
+                departmentList.add((Department) d);
+            }
+            return departmentList;
+
+        } catch (HibernateException exception) {
+            System.out.print(exception.getLocalizedMessage());
+            return null;
         }
     }
 }
